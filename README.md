@@ -2,9 +2,14 @@
 
 Use python to control your HEOS system.
 
+## how to install it:
+python3 setup.py install [--user]
+
+## Ascicast
 Here as example on how to use it:
 [![asciicast](https://asciinema.org/a/336820.png)](https://asciinema.org/a/336820)
 
+## Example
 After installing use:
 ```python
 import heos
