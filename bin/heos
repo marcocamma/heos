@@ -1,0 +1,12 @@
+#! /usr/bin/python3
+import sys
+import os
+import heos
+
+if len(sys.argv)==1:
+    h = heos.HEOS()
+    print(str(h))
+else:
+    print("Starting ipython session with instance `h` of HEOS system")
+    os.system("ipython3 -i -c 'import heos; h = heos.HEOS()'")
+
