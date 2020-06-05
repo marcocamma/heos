@@ -7,8 +7,7 @@ python3 setup.py install [--user]
 
 ## Ascicast
 Here as example on how to use it:
-[![asciicast](https://asciinema.org/a/336820.png)](https://asciinema.org/a/336820)
-
+[![asciicast](https://asciinema.org/a/336929.png)](https://asciinema.org/a/336929)
 
 ## CLI interface
 ```bash
