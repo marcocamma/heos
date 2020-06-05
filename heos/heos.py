@@ -33,18 +33,38 @@ def parse_json(ret):
     return ret
 
 def parse_what_is_playing(ret):
-    media_type = ret["mid"]
-    playing = None
-    if media_type[:2] == "cd":
-        playing = dict( support = "CD", track = int(ret["station"].split(" ")[-1]))
-    elif media_type[:4] == "http":
-        playing = dict( support = "Internet Radio", station = ret["station"],
-                artist = ret["artist"], song = ret["song"] )
+    media_type = ret["mid"].lower()
+    
+    str_repr = None
 
-    if playing is None: playing = ret
+    if media_type.startswith("cd"):
+        track = int(ret["station"].split(" ")[-1])
+        str_repr = f" - Listening CD track {track}"
+    elif media_type.startswith("http"):
+        if "station" in ret:
+            str_repr = f" - Listening to Internet Radio : {ret['station']}"
+            for key in ("artist","song"):
+                str_repr += f"\n  - {key:8s} : {ret[key]}"
+        else:
+            str_repr = f" - Listening to Podcast or Song"
+            str_repr += f"\n  - date|artist : {ret['artist']}"
+            str_repr += f"\n  - song|title  : {ret['song']}"
+    elif media_type.startswith("spotify"):
+        str_repr = f" - Listening to Spotify"
+        for key in ("artist","song"):
+           str_repr += f"\n  - {key:8s} : {ret[key]}"
+    elif media_type.startswith("inputs/"):
+        input_string = media_type.replace("inputs/","").replace('_',' ')
+        str_repr = f" - Listening to input {input_string}"
+    elif media_type == "tuner":
+        station = ret['station']
+        station_name = ret['artist']
+        str_repr = f" - Listening to Radio {station}"
+        if station_name != "" : str_repr += " (RDS {station_name})"
 
-    return playing
+    if str_repr is None: str_repr = str(ret)
 
+    return str_repr
 
 
 # TODO examples
@@ -68,7 +88,7 @@ class HEOS:
         self._verbose = verbose
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._sock.connect((ip,port))
-        self._sock.settimeout(0.03)
+        self._sock.settimeout(0.2)
         self._query("system","prettify_json_response",enable='on')
         if pid.lower() == "auto":
             pid = self._query("player","get_players")[0]["pid"]
@@ -256,16 +276,8 @@ class HEOS:
         s = name + f" (volume @ {self.volume.get()})"
 
         playing = self.play.playing()
-        if "support" in playing:
-            if playing['support'].lower() == 'cd':
-                s += f"\n - listening CD track {playing['track']}"
-            elif playing['support'].lower().startswith('internet'):
-                s += f"\n - listening to Internet radio:"
-                for key in ('station','artist','song'):
-                    if key in playing:
-                        s += f"\n   - {key:7s} : {playing[key]}"
-        else:
-            s += f"\n{str(playing)}"
+
+        s += f"\n{playing}"
         return s
 
 
