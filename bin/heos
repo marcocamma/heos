@@ -1,12 +1,41 @@
 #! /usr/bin/python3
-import sys
 import os
+import argparse
+
 import heos
 
-if len(sys.argv)==1:
+parser = argparse.ArgumentParser(
+    description="Control your HEOS system",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+)
+
+parser.add_argument("--interactive", action="store_true", help="start ipython session")
+parser.add_argument("--show_commands", action="store_true", help="show (sub)commands")
+parser.add_argument("input", nargs="*")
+
+args = parser.parse_args()
+
+if args.show_commands:
     h = heos.HEOS()
-    print(str(h))
-else:
+    print("** [name1 name2 ...] represent parameters")
+    print(h._submenus_string())
+
+if args.interactive:
     print("Starting ipython session with instance `h` of HEOS system")
     os.system("ipython3 -i -c 'import heos; h = heos.HEOS()'")
-
+else:
+    if len(args.input) == 0:
+        h = heos.HEOS()
+        print(str(h))
+    else:
+        h = heos.HEOS()
+        for i, a in enumerate(args.input):
+            print("processing", i, a)
+            if hasattr(h, a):
+                h = getattr(h, a)
+            else:
+                i = i - 1
+                break
+        func_args = args.input[i + 1 :]
+        print(func_args)
+        print(h(*func_args))

@@ -9,7 +9,32 @@ python3 setup.py install [--user]
 Here as example on how to use it:
 [![asciicast](https://asciinema.org/a/336820.png)](https://asciinema.org/a/336820)
 
-## Example
+
+## CLI interface
+```bash
+# print current status
+heos
+
+# start ipython session (see below)
+heos --interactive
+
+# show submenu CLI interface
+heos --show_commands
+
+# increase volume
+heos volume up
+
+# decrease play cd
+heos play cd
+
+# show favorites
+heo favorites show
+
+# play preset 2
+heos favorites play 2
+```
+
+## Interactive interface
 After installing use:
 ```python
 import heos
