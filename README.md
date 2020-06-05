@@ -24,7 +24,7 @@ heos --show_commands
 # increase volume
 heos volume up
 
-# decrease play cd
+# play cd
 heos play cd
 
 # show favorites
