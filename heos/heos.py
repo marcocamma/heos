@@ -64,7 +64,10 @@ def parse_what_is_playing(ret):
         str_repr = f" - Listening to Radio {station}"
         if station_name != "":
             str_repr += " (RDS {station_name})"
-
+    elif media_type.lower() == "bluetooth":
+        str_repr = f" - Listening to Bluetooth"
+        str_repr += f"\n  - artist : {ret['artist']}"
+        str_repr += f"\n  - song   : {ret['song']}"
     if str_repr is None:
         str_repr = str(ret)
 
@@ -237,6 +240,7 @@ class HEOS:
         return self._player("set_volume", level=value)
 
     def _volume_up(self, step=2):
+        step = int(step)
         if step > 10:
             step = 10
         if step < 1:
@@ -244,6 +248,7 @@ class HEOS:
         self._player("volume_up", step=step)
 
     def _volume_down(self, step=2):
+        step = int(step)
         if step > 10:
             step = 10
         if step < 1:
